@@ -6,12 +6,12 @@ class ChatListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ChatListScreenContent();
+    return const ChatListScreenContent(myName: '', myId: '',);
   }
 }
 
 class ChatListScreenContent extends StatelessWidget {
-  const ChatListScreenContent({super.key});
+  const ChatListScreenContent({super.key, required String myName, required String myId});
 
   @override
   Widget build(BuildContext context) {

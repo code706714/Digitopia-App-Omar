@@ -90,7 +90,7 @@ class _OTPScreenState extends State<OTPScreen> {
         await Future.delayed(const Duration(milliseconds: 500));
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const MainNavigation()),
+          MaterialPageRoute(builder: (context) => const MainNavigation(currentUserId: '', currentUserName: '',)),
           (route) => false,
         );
       } else {

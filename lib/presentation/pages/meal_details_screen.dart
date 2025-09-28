@@ -1,13 +1,15 @@
-import 'package:digitopia_app/presentation/pages/chat_screen.dart';
+import 'package:digitopia_app/presentation/pages/chat_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MealDetailsScreen extends StatelessWidget {
   final String mealId;
   final String title;
   final String description;
   final String chef;
-  final String chefId; // <-- added: معرف صاحب الوجبة (مهم)
+  final String chefId; // <-- معرف صاحب الوجبة (مهم)
   final String time;
   final double rating;
   final String price;
@@ -34,11 +36,19 @@ class MealDetailsScreen extends StatelessWidget {
     required this.quantity,
   });
 
-  void _openChat(BuildContext context) {
+  void _openPrivateChat(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('يجب تسجيل الدخول لبدء المحادثة')),
+      );
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => a()
+        builder: (context) => ChatPage()
       ),
     );
   }
@@ -311,14 +321,7 @@ class MealDetailsScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
-                  // فتح الشات مع صاحب الوجبة عند الضغط على "طلب الآن"
-                   Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => a(),
-                                  )
-                                );
-                },
+                onPressed: () => _openPrivateChat(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF6366F1),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -339,10 +342,7 @@ class MealDetailsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
-                onPressed: () {
-                  // فتح الشات عند الضغط على أيقونة الرسالة
-                  _openChat(context);
-                },
+                onPressed: () => _openPrivateChat(context),
                 icon: const Icon(Icons.message, color: Color(0xFF6366F1)),
               ),
             ),

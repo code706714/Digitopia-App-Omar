@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,24 +21,43 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+   String? email;
+  String? password;
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passController = TextEditingController();
   final confirmPassController = TextEditingController();
-
+  GlobalKey<FormState> formKey = GlobalKey();
   bool isLoading = false;
   bool obscurePass = true;
   bool obscureConfirm = true;
+
+  Future<void> _saveUserData(User user, {String? name}) async {
+    final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+
+    await userDoc.set({
+      'uid': user.uid,
+      'name': name ?? user.displayName ?? '',
+      'email': user.email ?? '',
+      'photoUrl': user.photoURL ?? '',
+      'phone': user.phoneNumber ?? '',
+      'createdAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
 
   Future<void> _registerWithEmail() async {
     if (_formKey.currentState!.validate()) {
       setState(() => isLoading = true);
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        final cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passController.text.trim(),
         );
+
+        // ✅ حفظ بيانات المستخدم في Firestore
+        await _saveUserData(cred.user!, name: nameController.text.trim());
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("تم التسجيل بنجاح")),
         );
@@ -89,7 +109,11 @@ class _SignInScreenState extends State<SignInScreen> {
         accessToken: accessToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final cred =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // ✅ حفظ بيانات المستخدم في Firestore
+      await _saveUserData(cred.user!);
 
       print("✅ تم تسجيل الدخول بجوجل بنجاح");
     } catch (e) {

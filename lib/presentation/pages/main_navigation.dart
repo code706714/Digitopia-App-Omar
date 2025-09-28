@@ -7,13 +7,21 @@ import 'package:digitopia_app/constants/app_constants.dart';
 import 'profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key});
+  final String currentUserId;
+  final String currentUserName;
+
+  const MainNavigation({
+    super.key,
+    required this.currentUserId,
+    required this.currentUserName,
+  });
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> with TickerProviderStateMixin {
+class _MainNavigationState extends State<MainNavigation>
+    with TickerProviderStateMixin {
   int _currentIndex = 0;
   late AnimationController _pageAnimationController;
   late Animation<double> pageAnimation;
@@ -38,12 +46,12 @@ class _MainNavigationState extends State<MainNavigation> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    
+
     _pageAnimationController = AnimationController(
       duration: AppConstants.animationMedium,
       vsync: this,
     );
-    
+
     pageCurve = CurvedAnimation(
       parent: _pageAnimationController,
       curve: Curves.easeInOut,
@@ -60,13 +68,16 @@ class _MainNavigationState extends State<MainNavigation> with TickerProviderStat
     super.dispose();
   }
 
-  final List<Widget> _pages = [
-    const HomeScreen(),
-    const MapScreen(),
-     ShareMealScreen(),
-    const ChatListScreenContent(),
-    const ProfileScreen(),
-  ];
+  List<Widget> get _pages => [
+        const HomeScreen(),
+        const MapScreen(),
+        ShareMealScreen(),
+        ChatListScreenContent(
+          myId: widget.currentUserId,
+          myName: widget.currentUserName,
+        ),
+        const ProfileScreen(),
+      ];
 
   void _onTabTapped(int index) {
     if (index != _currentIndex) {
@@ -77,14 +88,16 @@ class _MainNavigationState extends State<MainNavigation> with TickerProviderStat
       _pageAnimationController.forward();
     }
   }
-  
+
   Widget _buildNavItem(int index, IconData icon, String label) {
     final isSelected = _currentIndex == index;
     return AnimatedContainer(
       duration: AppConstants.animationFast,
       padding: EdgeInsets.all(isSelected ? 8 : 4),
       decoration: BoxDecoration(
-        color: isSelected ? AppConstants.primaryColor.withOpacity(0.1) : Colors.transparent,
+        color: isSelected
+            ? AppConstants.primaryColor.withOpacity(0.1)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(icon, size: isSelected ? 26 : 24),
@@ -109,7 +122,6 @@ class _MainNavigationState extends State<MainNavigation> with TickerProviderStat
           );
         },
       ),
-
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -131,12 +143,17 @@ class _MainNavigationState extends State<MainNavigation> with TickerProviderStat
           unselectedItemColor: Colors.grey,
           currentIndex: _currentIndex,
           onTap: _onTabTapped,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
-          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w400, fontSize: 11),
-          items: List.generate(5, (index) => BottomNavigationBarItem(
-            icon: _buildNavItem(index, iconList[index], labelList[index]),
-            label: labelList[index],
-          )),
+          selectedLabelStyle:
+              const TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
+          unselectedLabelStyle:
+              const TextStyle(fontWeight: FontWeight.w400, fontSize: 11),
+          items: List.generate(
+            5,
+            (index) => BottomNavigationBarItem(
+              icon: _buildNavItem(index, iconList[index], labelList[index]),
+              label: labelList[index],
+            ),
+          ),
         ),
       ),
     );

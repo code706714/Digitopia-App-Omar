@@ -3,6 +3,7 @@ import 'package:digitopia_app/presentation/pages/favorites_screen.dart';
 import 'package:digitopia_app/presentation/pages/help_support_screen.dart';
 import 'package:digitopia_app/presentation/pages/home_screen.dart';
 import 'package:digitopia_app/presentation/pages/language_screen.dart';
+import 'package:digitopia_app/presentation/pages/login_page.dart';
 import 'package:digitopia_app/presentation/pages/login_screen.dart';
 import 'package:digitopia_app/presentation/pages/notification_settings_screen.dart';
 import 'package:digitopia_app/presentation/pages/order_history_screen.dart';
@@ -224,7 +225,7 @@ class ProfileScreenContent extends StatelessWidget {
               await AuthService.signOut();
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                MaterialPageRoute(builder: (context) =>  LoginPage1()),
                 (route) => false,
               );
             },

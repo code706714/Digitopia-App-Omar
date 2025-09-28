@@ -1,5 +1,6 @@
 import 'package:digitopia_app/core/di/injection_container.dart' as di;
 import 'package:digitopia_app/presentation/pages/auth_wrapper.dart';
+import 'package:digitopia_app/presentation/pages/login_page.dart';
 import 'package:digitopia_app/presentation/pages/login_screen.dart';
 import 'package:digitopia_app/presentation/pages/signIn_screen.dart';
 import 'package:digitopia_app/services/connectivity_service.dart';
@@ -68,9 +69,10 @@ class _DigitopiaAppState extends State<DigitopiaApp> {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         useMaterial3: true,
       ),
-      home: ConnectivityService.buildConnectivityWrapper(
-        child: LoginScreen(),
-      ),
+      home:// ConnectivityService.buildConnectivityWrapper(
+       // child: LoginPage(),
+    //  ),
+    LoginPage1(),
       debugShowCheckedModeBanner: false,
     );
   }

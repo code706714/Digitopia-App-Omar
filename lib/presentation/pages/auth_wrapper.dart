@@ -1,3 +1,4 @@
+import 'package:digitopia_app/presentation/pages/login_page.dart';
 import 'package:digitopia_app/presentation/pages/login_screen.dart';
 import 'package:digitopia_app/presentation/pages/main_navigation.dart';
 import 'package:digitopia_app/services/auth_service.dart';
@@ -18,7 +19,7 @@ class AuthWrapper extends StatelessWidget {
         }
         
         final isLoggedIn = snapshot.data ?? false;
-        return isLoggedIn ? const MainNavigation() : const LoginScreen();
+        return isLoggedIn ? const MainNavigation(currentUserId: '', currentUserName: '',) : LoginPage1();
       },
     );
   }
